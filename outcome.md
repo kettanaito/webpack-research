@@ -1,7 +1,12 @@
 # Outcome
-* **Results:**
+* Setup
   * [Repository integration](#repository-integration)
   * [Configuration composition](#configuration-composition)
+  * [Vendor bundle](#vendor-bundle)
+* Development
+  * Hot Module Replacement
+* Production
+  * Minification and tree shaking
   
 ## Foreword
 For the sake of keeping this document clean, chosen solutions will be marked with :white_check_mark: icon.
@@ -78,3 +83,27 @@ Therefore, the following approaches were tested:
 * **Cons:**
   * More boilerplate
   * Parts should have reasonable internal logic, otherwise they would grow to complex, decreasing their readability
+
+### Vendor bundle
+Vendor bundle is a dedicated JS file containing all used dependencies of another bundle. In our case, `vendor.js` contains the modules (third-party libraries) required to run `client.js` (application bundle). There are a few ways to approach vendor modules management.
+
+#### A. Specify vendor modules manually
+```js
+// webpack/presets/vendor.js
+{
+ entry: ['react', 'react-dom', 'react-redux', ...]
+}
+```
+* **Pros:**
+  * More granular control over what gets included into the vendor bundle
+* **Cons:**
+  * Forces to modify module's array each time a dependency is installed or removed (bad maintainance)
+
+#### B. Use `package.dependencies` dynamically :white_check_mark:
+Since our projects are not libraries, and are not meant to be installed differently rather than `npm install`, the separation into `devDependencies` and `dependencies` is quite relative. This allows us to control what goes into the vendor bundle by simply installing the module using a `-S` flag (which says that the module is a save dependency for the project).
+* **Pros:**
+  * Dynamic control over what gets included into the vendor bundle
+  * No need to maintain vendor configuration at all; maintainance is done by installing/removing the modules using a proper flag
+  * Feels intuitive, since vital (save) dependencies *should* be present in order for the app to run
+* **Cons:**
+  * Requires developers' acknowledgement, so to prevent unnecessary things being bundled into vendor
