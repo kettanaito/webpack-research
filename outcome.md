@@ -1,6 +1,9 @@
 # Outcome
+* **Results**
+  * [Configuration composition](#configuration-composition)
+  
 ## Foreword
-In order to prevent repetition, chosen solutions will be marked with :white_check_mark: icon.
+For the sake of keeping this document clean, chosen solutions will be marked with :white_check_mark: icon.
 
 ## Results
 This is the collection of personal findnigs which were acquired during the research:
