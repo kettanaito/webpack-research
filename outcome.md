@@ -84,8 +84,19 @@ Therefore, the following approaches were tested:
   * More boilerplate
   * Parts should have reasonable internal logic, otherwise they would grow to complex, decreasing their readability
 
+---
+
 ### Vendor bundle
 Vendor bundle is a dedicated JS file containing all used dependencies of another bundle. In our case, `vendor.js` contains the modules (third-party libraries) required to run `client.js` (application bundle). There are a few ways to approach vendor modules management.
+
+* **Pros:**
+  * Allows to reduce a file size of the client bundle by up to **~98%**
+  * Faster development speed due to faster initial and incremental builds (third-party code is not transpiled at all)
+  * Better website performance. Vendor bundle is meant to be cached forever, since it is unlikely to change rapidly over time
+  * Separation between client and vendor environment (possibility to build vendor libraries in `development` environment even on production website for debugging)
+* **Cons:**
+  * Extra step in the build pipeline
+  * Required to bundle vendor each time during the deploy builds (however, unnecessary during the development)
 
 #### A. Specify vendor modules manually
 ```js
@@ -97,7 +108,7 @@ Vendor bundle is a dedicated JS file containing all used dependencies of another
 * **Pros:**
   * More granular control over what gets included into the vendor bundle
 * **Cons:**
-  * Forces to modify module's array each time a dependency is installed or removed (bad maintainance)
+  * Forces to modify module's array each time a dependency is installed or removed (bad maintainance). Missing module during the webpack build will result into error and can break the whole build
 
 #### B. Use `package.dependencies` dynamically :white_check_mark:
 Since our projects are not libraries, and are not meant to be installed differently rather than `npm install`, the separation into `devDependencies` and `dependencies` is quite relative. This allows us to control what goes into the vendor bundle by simply installing the module using a `-S` flag (which says that the module is a save dependency for the project).
